@@ -24,13 +24,14 @@ public final class ColorLoggerFactory/*<R extends HasCollor<L>, L>*/ {
 
 
 	@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-	public static class LoggerWrapper<R extends HasCollor<L>, L> {
+	public static class LoggerWrapper<R extends HasCollor<L>, L> implements HasCollor<LoggerWrapper> {
 		private final SupporedLogger<R, L> loggerType;
 
 		private L original;
 		private ASCIColor baseColor = null;
 		private static ThreadLocal<ASCIColor> $locals = new ThreadLocal<>();
 
+		@Override
 		public LoggerWrapper<R, L> color(ASCIColor color) {
 			this.baseColor = color;
 			return this;

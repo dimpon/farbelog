@@ -21,9 +21,9 @@ public class App
 
 
 
-private static final ColorLoggerSlf4j LOG = ColorLoggerFactory.type(SLF4J)
-        //.color(RED)
-        .getLogger(App.class);
+private static final ColorLoggerSlf4j LOG = ColorLoggerFactory.type(SLF4J).color(RED).getLogger(App.class);
+
+    //private static final ColorLoggerSlf4j LOG = ColorLoggerFactorySlf4j.getLogger(App.class).color(RED);
 
 
 /*
