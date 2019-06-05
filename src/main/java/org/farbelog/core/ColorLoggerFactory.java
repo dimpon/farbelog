@@ -18,38 +18,14 @@ import org.farbelog.loggers.SupporedLogger;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ColorLoggerFactory/*<R extends HasCollor<L>, L>*/ {
 
-	public static <R extends HasCollor<L>, L> LoggerWrapper<R, L> type(SupporedLogger<R, L, Class<?>> logger) {
+	public static <R extends HasCollor<L>, L> LoggerWrapper<R, L> type(SupporedLogger<R, L> logger) {
 		return new LoggerWrapper<R, L>(logger);
 	}
 
 
-
-	/*private final L original;
-
-	private ASCIColor baseColor = null;
-	private static ThreadLocal<ASCIColor> $locals = new ThreadLocal<>();
-
-	public static <R extends HasCollor<L>, L> R getLogger(Class<R> clazz, L original, ASCIColor color) {
-		ColorLoggerFactory<R, L> factory = new ColorLoggerFactory<>(original, color);
-		return factory.getLogger(clazz);
-	}
-
-	public static <R extends HasCollor<L>, L> R getLogger(Class<R> clazz, L original) {
-		ColorLoggerFactory<R, L> factory = new ColorLoggerFactory<>(original);
-		return factory.getLogger(clazz);
-	}
-
-	@SuppressWarnings("unchecked")
-	private R getLogger(Class<R> clazz) {
-		return (R) Proxy.newProxyInstance(
-				ColorLoggerFactory.class.getClassLoader(),
-				new Class[]{clazz},
-				new ColorLoggerFactory.DynamicInvocationHandler());
-	}*/
-
 	@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 	public static class LoggerWrapper<R extends HasCollor<L>, L> {
-		private final SupporedLogger<R, L, Class<?>> loggerType;
+		private final SupporedLogger<R, L> loggerType;
 
 		private L original;
 		private ASCIColor baseColor = null;
@@ -63,8 +39,7 @@ public final class ColorLoggerFactory/*<R extends HasCollor<L>, L>*/ {
 		@SuppressWarnings("unchecked")
 		public R getLogger(Class<?> clazz) {
 
-			original = loggerType.createOriginalLogger().apply(clazz);
-
+			original = loggerType.originalLoggerFunction().apply(clazz);
 
 			return (R) Proxy.newProxyInstance(
 					ColorLoggerFactory.class.getClassLoader(),
@@ -100,16 +75,6 @@ public final class ColorLoggerFactory/*<R extends HasCollor<L>, L>*/ {
 					args[i] = String.format(pattern, args[i].toString());
 				}
 			}
-
 		}
-
 	}
-
-
-
-	/*@Value
-	public final static class InitPair<R extends Class<? extends HasCollor<L>>, L> {
-		private final R clazz;
-		private final L logger;
-	}*/
 }

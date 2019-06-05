@@ -3,10 +3,11 @@ package org.farbelog;
 
 
 import static org.farbelog.core.ASCIColors.*;
+import static org.farbelog.loggers.SupporedLogger.Log4j2Supported.*;
+import static org.farbelog.loggers.SupporedLogger.Slf4jSupported.*;
 
 import org.farbelog.core.ColorLoggerFactory;
 import org.farbelog.loggers.SupporedLogger;
-import org.slf4j.Logger;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -14,12 +15,21 @@ import lombok.extern.slf4j.Slf4j;
  * Hello world!
  *
  */
-@Slf4j
+
 public class App 
 {
 
 
-private static final SupporedLogger.ColorLoggerSlf4j LOG = ColorLoggerFactory.type(SupporedLogger.SLF4J).color(RED).getLogger(App.class);
+
+private static final ColorLoggerSlf4j LOG = ColorLoggerFactory.type(SLF4J)
+        //.color(RED)
+        .getLogger(App.class);
+
+
+/*
+    private static final SupporedLogger.ColorLoggerLog4j2 LOG = ColorLoggerFactory.type(LOG4J2)
+            //.color(RED)
+            .getLogger(App.class);*/
 
     public static void main( String[] args )
     {
@@ -29,11 +39,12 @@ private static final SupporedLogger.ColorLoggerSlf4j LOG = ColorLoggerFactory.ty
         String aaa = String.format("\u001b[33m%s\u001b[0m", "AAA");
         System.out.println(aaa);
 
-        log.info(aaa);
+
 
         LOG.info("hi 1");
         LOG.color(GREEN).info("hi 2");
         LOG.color(BLUE).info("hi 3");
+        LOG.color(YELLOW).info("hi 4");
 
     }
 }
