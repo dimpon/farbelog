@@ -32,19 +32,21 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
       <version>1.7.25</version>
-     <!-- <scope>provided</scope>-->
+    <!--  <scope>provided</scope>-->
     </dependency>
+
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-simple</artifactId>
       <version>1.7.25</version>
+      <!--<scope>provided</scope>-->
     </dependency>
 
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-api</artifactId>
       <version>2.11.2</version>
-      <scope>provided</scope>
+      <!--<scope>provided</scope>-->
     </dependency>
 
 
@@ -60,6 +62,10 @@
       <version>5.4.2</version>
       <scope>test</scope>
     </dependency>
+
+
+
+
   </dependencies>
 
   <build>

@@ -1,11 +1,14 @@
 package org.farbelog;
 
-import lombok.extern.slf4j.Slf4j;
-import org.farbelog.core.ColorLoggerFactory;
-import org.farbelog.loggers.Slf4jSupport.Logger;
-import org.slf4j.LoggerFactory;
+
 
 import static org.farbelog.core.ASCIColors.*;
+
+import org.farbelog.core.ColorLoggerFactory;
+import org.farbelog.loggers.SupporedLogger;
+import org.slf4j.Logger;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Hello world!
@@ -14,7 +17,9 @@ import static org.farbelog.core.ASCIColors.*;
 @Slf4j
 public class App 
 {
-    private static final Logger LOG = ColorLoggerFactory.getLogger(Logger.class, LoggerFactory.getLogger(App.class),GREEN);
+
+
+private static final SupporedLogger.ColorLoggerSlf4j LOG = ColorLoggerFactory.type(SupporedLogger.SLF4J).color(RED).getLogger(App.class);
 
     public static void main( String[] args )
     {
@@ -27,7 +32,7 @@ public class App
         log.info(aaa);
 
         LOG.info("hi 1");
-        LOG.color(RED).info("hi 2");
+        LOG.color(GREEN).info("hi 2");
         LOG.color(BLUE).info("hi 3");
 
     }
