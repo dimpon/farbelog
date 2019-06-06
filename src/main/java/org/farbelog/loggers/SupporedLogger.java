@@ -38,7 +38,9 @@ public final class SupporedLogger {
 		Function<Class<?>[], Stream<Class<?>>> fu = Arrays::stream;
 
 		Optional<Class<?>> first = interfaces.stream()
-				.filter(candidate -> fu.apply(candidate.getInterfaces()).anyMatch(aClass -> su.get().anyMatch(aClass1 -> aClass1 == aClass)))
+				.filter(candidate -> fu.apply(candidate.getInterfaces())
+						.anyMatch(aClass -> su.get()
+								.anyMatch(aClass1 -> aClass1 == aClass)))
 				.findFirst();
 
 		return first.orElseThrow(() -> new IllegalArgumentException("Interface not found"));
