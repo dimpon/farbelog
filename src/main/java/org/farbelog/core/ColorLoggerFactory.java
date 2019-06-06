@@ -6,11 +6,14 @@ import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.farbelog.loggers.SupporedLogger;
@@ -18,35 +21,77 @@ import org.farbelog.loggers.SupporedLogger;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ColorLoggerFactory/*<R extends HasCollor<L>, L>*/ {
 
-	public static <R extends HasCollor<L>, L> LoggerWrapper<R, L> type(SupporedLogger<R, L> logger) {
+	/*public static <R extends HasCollor<L>, L> LoggerWrapper<R, L> type(SupporedLogger<R, L> logger) {
 		return new LoggerWrapper<R, L>(logger);
+	}*/
+
+	public static <R extends HasCollor<L>, L> R wrapLogger(L original) {
+		return new LoggerWrapper<R, L>(original).getLogger();
 	}
 
+	public static <R extends HasCollor<L>, L> R wrapLogger(L original, ASCIColor color) {
+		return new LoggerWrapper<R, L>(original, color).getLogger();
+	}
+
+	/*public static <R extends HasCollor<L>, L> getLogger(L original, ASCIColor color) {
+
+	}*/
 
 	@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-	public static class LoggerWrapper<R extends HasCollor<L>, L> implements HasCollor<LoggerWrapper> {
-		private final SupporedLogger<R, L> loggerType;
+	private static class LoggerWrapper<R extends HasCollor<L>, L> {
+
+		private SupporedLogger supporedLogger = new SupporedLogger();
 
 		private L original;
 		private ASCIColor baseColor = null;
 		private static ThreadLocal<ASCIColor> $locals = new ThreadLocal<>();
 
-		@Override
-		public LoggerWrapper<R, L> color(ASCIColor color) {
+		private LoggerWrapper(L original) {
+			this.original = original;
+		}
+
+		private LoggerWrapper(L original, ASCIColor color) {
+			this.original = original;
 			this.baseColor = color;
-			return this;
 		}
 
 		@SuppressWarnings("unchecked")
-		public R getLogger(Class<?> clazz) {
+		private R getLogger() {
 
-			original = loggerType.originalLoggerFunction().apply(clazz);
+			Class<?>[] interfaces = findInterfaces(this.original.getClass(), new Class<?>[]{HasCollor.class});
+			Class<?>[] dInterfaces = Arrays.stream(interfaces).distinct().toArray(Class<?>[]::new);
+
+			Class<?> anInterface = supporedLogger.findInterface(interfaces);
 
 			return (R) Proxy.newProxyInstance(
 					ColorLoggerFactory.class.getClassLoader(),
-					new Class[]{loggerType.coloredLogger()},
+					new Class<?>[]{anInterface},
 					new LoggerWrapper.DynamicInvocationHandler());
 		}
+
+		private Class<?>[] findInterfaces(Class<?> clazz, Class<?>[] interfaces) {
+
+			Class<?>[] newInterfaces = clazz.getInterfaces();
+			Class<?> superclass = clazz.getSuperclass();
+			if (superclass == null)
+				return concatenate(interfaces, newInterfaces);
+
+			return findInterfaces(superclass, concatenate(interfaces, newInterfaces));
+		}
+
+		private <T> T[] concatenate(T[] a, T[] b) {
+			int aLen = a.length;
+			int bLen = b.length;
+
+			@SuppressWarnings("unchecked")
+			T[] c = (T[]) Array.newInstance(a.getClass().getComponentType(), aLen + bLen);
+			System.arraycopy(a, 0, c, 0, aLen);
+			System.arraycopy(b, 0, c, aLen, bLen);
+
+			return c;
+		}
+
+
 
 		private class DynamicInvocationHandler implements InvocationHandler {
 
